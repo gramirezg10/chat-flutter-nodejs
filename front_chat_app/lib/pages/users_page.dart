@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:front_chat_app/services/auth_service.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:front_chat_app/models/user_model.dart';
 
@@ -19,22 +21,28 @@ class _UsersPageState extends State<UsersPage> {
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   final users = [
-    UserModel(uid: '001', email: 'test1@test.com', nombre: 'Usuario1', online: true),
-    UserModel(uid: '002', email: 'test2@test.com', nombre: 'Usuario2', online: false),
-    UserModel(uid: '003', email: 'test3@test.com', nombre: 'Usuario3', online: true),
-    UserModel(uid: '004', email: 'test4@test.com', nombre: 'Usuario4', online: true),
+    UserModel(uid: '001', email: 'test1@test.com', username: 'Usuario1', online: true),
+    UserModel(uid: '002', email: 'test2@test.com', username: 'Usuario2', online: false),
+    UserModel(uid: '003', email: 'test3@test.com', username: 'Usuario3', online: true),
+    UserModel(uid: '004', email: 'test4@test.com', username: 'Usuario4', online: true),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final user = authService.userModel;
     bool isOnline = false;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi nombre', style: TextStyle(color: Colors.black54),),
+        title: Text(user?.username?? 'User' , style: TextStyle(color: Colors.black54),),
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.exit_to_app, color: Colors.black54),
-          onPressed: (){ print('exit');},
+          onPressed: (){ 
+            // TODO: Desconectar el socket
+            Navigator.pushReplacementNamed(context, 'login');
+            AuthService.deleteToken();
+          },
           ),
         actions: <Widget>[
           Container(

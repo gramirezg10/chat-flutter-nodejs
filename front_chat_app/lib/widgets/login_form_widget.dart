@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:front_chat_app/helpers/show_alert.dart';
+import 'package:front_chat_app/services/auth_service.dart';
 import 'package:front_chat_app/widgets/blue_button.dart';
 import 'package:front_chat_app/widgets/custom_input.dart';
+import 'package:provider/provider.dart';
 
 class FormLogin extends StatefulWidget {
   final bool registerForm;
@@ -21,6 +24,7 @@ class _FormLoginState extends State<FormLogin> {
   
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -46,8 +50,23 @@ class _FormLoginState extends State<FormLogin> {
           ),
           BlueButton(
             label: 'Button',
-            onPressed: (){
-              print(emailCtrl.text);
+            onPressed: authService.autenticando ? () => {} : () async {
+              FocusScope.of(context).unfocus();
+              if (widget.registerForm) {
+                final registerOk = await authService.register(nameCtrl.text.trim(), emailCtrl.text.trim(), passCtrl.text.trim());
+                if (registerOk == true) {
+                  Navigator.pushReplacementNamed(context, 'users');
+                } else {
+                  ShowAlert(context, 'Registro incorrecto', registerOk);
+                }
+              } else {
+                final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
+                if (loginOk) {
+                  Navigator.pushReplacementNamed(context, 'users');
+                } else {
+                  ShowAlert(context, 'Login incorrecto', 'Credenciales incorrectas');
+                }
+              }
             },
           )
         ],

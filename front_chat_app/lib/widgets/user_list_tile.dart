@@ -6,11 +6,11 @@ import '../models/user_model.dart';
 
 ListTile userListTile(UserModel user) {
     return ListTile(
-        title: Text(user.nombre),
+        title: Text(user.username),
         subtitle: Text(user.email, style: TextStyle(fontSize: 12),),
         leading: CircleAvatar(
           child: Text(
-            user.nombre.substring(0,1) + (user.nombre.substring(user.nombre.length - 1)),
+            user.username.substring(0,1) + (user.username.substring(user.username.length - 1)),
             style: TextStyle(
               color: Colors.white
             ),),
