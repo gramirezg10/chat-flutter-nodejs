@@ -86,7 +86,7 @@ const renewTkn = async(req, res = response) => {
   return res.json({
     ok: true,
     user,
-    newToken
+    token: newToken
   }); 
 }
 
